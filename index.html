@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>vagabond</title>
+  <meta name="theme-color" content="#000000" />
+
+  <style>
+    :root{
+      --bg:#000;
+      --fg:#fff;
+      --muted: rgba(255,255,255,.75);
+      --muted2: rgba(255,255,255,.5);
+      --line: rgba(255,255,255,.16);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--fg);
+      overflow:hidden;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+
+    .stage{
+      position:relative;
+      width:100%;
+      height:100%;
+      display:grid;
+      place-items:center;
+    }
+
+    /* Logo centré + mouvement doux perpétuel */
+    .logo{
+      width:min(86vw, 1100px);
+      height:auto;
+      user-select:none;
+      pointer-events:none;
+      filter: drop-shadow(0 0 18px rgba(255,255,255,.06));
+      animation: drift 9s ease-in-out infinite;
+      transform: translate3d(0,0,0);
+      will-change: transform;
+    }
+    @keyframes drift{
+      0%   { transform: translate3d(-16px,  6px, 0); }
+      25%  { transform: translate3d( 18px, -6px, 0); }
+      50%  { transform: translate3d( 10px, 10px, 0); }
+      75%  { transform: translate3d(-20px, -5px, 0); }
+      100% { transform: translate3d(-16px,  6px, 0); }
+    }
+
+    .bottom{
+      position:absolute;
+      left:0; right:0;
+      bottom:18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:14px;
+      padding:0 18px;
+    }
+
+    .signup{ max-width:min(560px, 66vw); }
+    .cta{
+      color:var(--muted);
+      font-size:13px;
+      letter-spacing:.04em;
+      margin-bottom:10px;
+      user-select:none;
+    }
+
+    form{ display:flex; gap:10px; align-items:center; }
+    input[type="email"]{
+      width:min(360px, 52vw);
+      background:transparent;
+      border:1px solid var(--line);
+      color:var(--fg);
+      padding:10px 12px;
+      border-radius:14px;
+      outline:none;
+      font-size:14px;
+    }
+    input[type="email"]::placeholder{ color:var(--muted2); }
+
+    button{
+      background:transparent;
+      border:1px solid var(--line);
+      color:var(--fg);
+      padding:10px 14px;
+      border-radius:14px;
+      cursor:pointer;
+      font-size:14px;
+      transition: transform .15s ease, border-color .15s ease;
+    }
+    button:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.28); }
+
+    .status{
+      margin-top:8px;
+      min-height:16px;
+      font-size:12px;
+      color:var(--muted2);
+      user-select:none;
+    }
+
+    .info{
+      text-align:right;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.03em;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .info b{ color:var(--fg); font-weight:600; }
+    .countdown{ margin-top:6px; color:var(--muted2); }
+
+    @media (max-width:520px){
+      form{ flex-direction:column; align-items:stretch; }
+      input[type="email"]{ width:100%; }
+      .bottom{ bottom:14px; padding:0 14px; }
+      .info{ font-size:11px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="stage">
+    <!-- Mets ton image à la racine du repo et nomme-la EXACTEMENT logo.png -->
+    <img class="logo" src="logo.png" alt="vagabond" />
+
+    <div class="bottom">
+      <div class="signup">
+        <div class="cta">join the mouvement / rejoins le mouvement</div>
+
+        <form id="signupForm" action="https://formspree.io/f/xvzbaqyz" method="POST">
+          <input type="email" name="email" placeholder="email" autocomplete="email" required />
+          <button type="submit">join</button>
+        </form>
+
+        <div id="status" class="status"></div>
+      </div>
+
+      <div class="info">
+        visiteurs depuis lancement : <b id="visits">—</b>
+        <div class="countdown">26/06/26 • <span id="countdown">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Compteur visiteurs (CountAPI) — unique à ton site
+    const NAMESPACE = "vagabond-v9g9bond";
+    const KEY = "home";
+
+    async function updateVisits(){
+      const el = document.getElementById("visits");
+      try{
+        const url = `https://api.countapi.xyz/hit/${encodeURIComponent(NAMESPACE)}/${encodeURIComponent(KEY)}`;
+        const res = await fetch(url, { cache: "no-store" });
+        if(!res.ok) throw new Error("CountAPI error");
+        const data = await res.json();
+        el.textContent = String(data.value ?? "—");
+      }catch(e){
+        el.textContent = "—";
+      }
+    }
+
+    // Décompte vers 26/06/2026 (heure locale du visiteur)
+    const target = new Date(2026, 5, 26, 0, 0, 0);
+    const pad = (n)=> String(n).padStart(2,"0");
+
+    function tickCountdown(){
+      const now = new Date();
+      const ms = target - now;
+      if(ms <= 0){
+        document.getElementById("countdown").textContent = "maintenant";
+        return;
+      }
+      const sec = Math.floor(ms/1000);
+      const d = Math.floor(sec/86400);
+      const h = Math.floor((sec%86400)/3600);
+      const m = Math.floor((sec%3600)/60);
+      const s = sec%60;
+      document.getElementById("countdown").textContent = `${d}j ${pad(h)}h ${pad(m)}m ${pad(s)}s`;
+    }
+
+    // Formspree en AJAX
+    const form = document.getElementById("signupForm");
+    const statusEl = document.getElementById("status");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      statusEl.textContent = "…";
+      try{
+        const formData = new FormData(form);
+        const res = await fetch(form.action, {
+          method: "POST",
+          body: formData,
+          headers: { "Accept": "application/json" }
+        });
+        if(res.ok){
+          statusEl.textContent = "inscription reçue ✶";
+          form.reset();
+        }else{
+          statusEl.textContent = "erreur — réessaie";
+        }
+      }catch(err){
+        statusEl.textContent = "erreur réseau — réessaie";
+      }
+    });
+
+    updateVisits();
+    tickCountdown();
+    setInterval(tickCountdown, 1000);
+  </script>
+</body>
+</html>
