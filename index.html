@@ -86,7 +86,7 @@
         );
       background-size: 260% 260%;
       background-position: 0% 40%;
-      animation: chromeFlow 2.8s ease-in-out infinite;
+      animation: chromeFlow 14s linear infinite;
 
       /* Le masque = ton logo */
       -webkit-mask-image: url("logo.png");
@@ -101,7 +101,7 @@
       /* “relief” + contraste (pas juste glow) */
       filter:
         contrast(1.25)
-        brightness(1.05)
+        brightness(1.10)
         drop-shadow(0 0 2px rgba(255,255,255,.08))
         drop-shadow(0 18px 30px rgba(0,0,0,.55));
     }
@@ -162,9 +162,8 @@
     }
 
     @keyframes chromeFlow{
-      0%   { background-position: 0% 40%; }
-      50%  { background-position: 100% 55%; }
-      100% { background-position: 0% 40%; }
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
     }
 
     @keyframes specSweep{
