@@ -1,220 +1,230 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>vagabond</title>
-  <meta name="theme-color" content="#ffffff" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>vagabond</title>
+<meta name="theme-color" content="#000000">
 
-  <style>
-    *{ box-sizing:border-box; }
-    html, body{
-  height:100%;
+<style>
+:root{
+  --bg:#000;
+  --fg:#fff;
+  --muted:rgba(255,255,255,.75);
+  --muted2:rgba(255,255,255,.5);
+  --line:rgba(255,255,255,.2);
+}
+
+*{box-sizing:border-box;}
+
+html,body{
   margin:0;
-  background:#000000 !important;  /* fond noir */
-  color:#ffffff !important;       /* texte blanc */
+  height:100%;
+  background:var(--bg);
+  color:var(--fg);
   overflow:hidden;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
 }
 
-    .stage{
-      position:relative;
-      width:100%;
-      height:100%;
-      display:grid;
-      place-items:center;
-      background:#ffffff !important; /* force blanc */
-    }
+/* ===== CENTER STAGE ===== */
+.stage{
+  position:relative;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  perspective:1200px;
+}
 
-    /* Logo centré + mouvement doux */
-    .logo{
-  width:min(86vw, 1100px);
-  height:auto;
-  user-select:none;
+/* ===== LOGO CHROME 3D ===== */
+.logo{
+  width:min(85vw,1100px);
+  animation: rotate3d 12s linear infinite;
+  transform-style:preserve-3d;
+
+  /* effet chrome */
+  filter:
+    contrast(1.2)
+    brightness(1.3)
+    drop-shadow(0 0 30px rgba(255,255,255,0.18))
+    drop-shadow(0 0 90px rgba(255,255,255,0.08));
+}
+
+/* rotation 3D */
+@keyframes rotate3d{
+  0%   { transform: rotateY(0deg) rotateX(0deg); }
+  50%  { transform: rotateY(180deg) rotateX(8deg); }
+  100% { transform: rotateY(360deg) rotateX(0deg); }
+}
+
+/* reflet chrome animé */
+.logo::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(255,255,255,0.4),
+    transparent 70%
+  );
+  mix-blend-mode:overlay;
+  animation: shine 3s ease-in-out infinite;
   pointer-events:none;
-  animation: logoSpin 8s linear infinite, shimmer 2.2s ease-in-out infinite;
-  will-change: transform, filter;
-
-  /* métal + glow */
-  filter: contrast(1.15) brightness(1.15)
-          drop-shadow(0 0 26px rgba(255,255,255,0.18))
-          drop-shadow(0 0 80px rgba(255,255,255,0.08));
 }
 
-@keyframes logoSpin{
-  0%   { transform: rotateY(0deg); }
-  100% { transform: rotateY(360deg); }
+@keyframes shine{
+  0%   { transform:translateX(-100%); opacity:.2;}
+  50%  { transform:translateX(100%); opacity:.6;}
+  100% { transform:translateX(200%); opacity:.2;}
 }
 
-@keyframes shimmer{
-  0%,100% { filter: contrast(1.15) brightness(1.10) drop-shadow(0 0 26px rgba(255,255,255,0.16)); }
-  50%     { filter: contrast(1.25) brightness(1.25) drop-shadow(0 0 34px rgba(255,255,255,0.22)); }
+/* ===== BOTTOM SECTION ===== */
+.bottom{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:20px;
+  display:flex;
+  justify-content:space-between;
+  padding:0 25px;
 }
 
-    .bottom{
-      position:absolute;
-      left:0; right:0;
-      bottom:18px;
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-end;
-      gap:14px;
-      padding:0 18px;
-    }
+.cta{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:10px;
+}
 
-    .cta{
-      color: rgba(0,0,0,.78);
-      font-size:13px;
-      letter-spacing:.04em;
-      margin-bottom:10px;
-      user-select:none;
-    }
+form{
+  display:flex;
+  gap:10px;
+}
 
-    form{ display:flex; gap:10px; align-items:center; }
+input[type="email"]{
+  background:transparent;
+  border:1px solid var(--line);
+  color:var(--fg);
+  padding:10px 14px;
+  border-radius:14px;
+  outline:none;
+}
 
-    input[type="email"]{
-      width:min(360px, 52vw);
-      background:transparent;
-      border:1px solid rgba(255,255,255,.25);
-      color:#fff;
-      padding:10px 12px;
-      border-radius:14px;
-      outline:none;
-      font-size:14px;
-    }
-    input[type="email"]::placeholder{ color: rgba(0,0,0,.45); }
+button{
+  background:transparent;
+  border:1px solid var(--line);
+  color:var(--fg);
+  padding:10px 14px;
+  border-radius:14px;
+  cursor:pointer;
+  transition:.2s;
+}
 
-    button{
-      background:transparent;
-      border:1px solid rgba(255,255,255,.25);
-      color:#fff;
-      padding:10px 14px;
-      border-radius:14px;
-      cursor:pointer;
-      font-size:14px;
-      transition: transform .15s ease, border-color .15s ease;
-    }
-    button:hover{
-      transform: translateY(-1px);
-      border-color: rgba(0,0,0,.28);
-    }
+button:hover{
+  border-color:#fff;
+  transform:translateY(-2px);
+}
 
-    .status{
-      margin-top:8px;
-      min-height:16px;
-      font-size:12px;
-      color: rgba(0,0,0,.5);
-      user-select:none;
-    }
+.status{
+  margin-top:6px;
+  font-size:12px;
+  color:var(--muted2);
+}
 
-    .info{
-      text-align:right;
-      color: rgba(0,0,0,.78);
-      font-size:12px;
-      letter-spacing:.03em;
-      user-select:none;
-      white-space:nowrap;
-    }
-    .info b{ color:#000; font-weight:700; }
-    .countdown{ margin-top:6px; color: rgba(0,0,0,.5); }
+.info{
+  text-align:right;
+  font-size:12px;
+  color:var(--muted);
+}
 
-    @media (max-width:520px){
-      form{ flex-direction:column; align-items:stretch; }
-      input[type="email"]{ width:100%; }
-      .bottom{ bottom:14px; padding:0 14px; }
-      .info{ font-size:11px; }
-    }
-  </style>
+.info b{
+  color:#fff;
+}
+</style>
 </head>
 
 <body>
-  <div class="stage">
-    <!-- IMPORTANT: ton fichier doit s'appeler EXACTEMENT logo.png et être à la racine -->
-    <img class="logo" src="logo.png" alt="vagabond" />
 
-    <div class="bottom">
-      <div class="signup">
-        <div class="cta">join the mouvement / rejoins le mouvement</div>
+<div class="stage">
+  <!-- ton fichier doit s'appeler EXACTEMENT logo.png -->
+  <img class="logo" src="logo.png" alt="vagabond">
+</div>
 
-        <form id="signupForm" action="https://formspree.io/f/xvzbaqyz" method="POST">
-          <input type="email" name="email" placeholder="email" autocomplete="email" required />
-          <button type="submit">join</button>
-        </form>
+<div class="bottom">
 
-        <div id="status" class="status"></div>
-      </div>
+  <div>
+    <div class="cta">join the mouvement / rejoins le mouvement</div>
 
-      <div class="info">
-        visiteurs depuis lancement : <b id="visits">—</b>
-        <div class="countdown">26/06/26 • <span id="countdown">—</span></div>
-      </div>
-    </div>
+    <form id="signupForm" action="https://formspree.io/f/xvzbaqyz" method="POST">
+      <input type="email" name="email" placeholder="email" required>
+      <button type="submit">join</button>
+    </form>
+
+    <div id="status" class="status"></div>
   </div>
 
-  <script>
-    // Compteur visiteurs (CountAPI)
-    const NAMESPACE = "vagabond-v9g9bond";
-    const KEY = "home";
+  <div class="info">
+    visiteurs depuis lancement : <b id="visits">—</b><br>
+    26/06/26 • <span id="countdown">—</span>
+  </div>
 
-    async function updateVisits(){
-      const el = document.getElementById("visits");
-      try{
-        const url = `https://api.countapi.xyz/hit/${encodeURIComponent(NAMESPACE)}/${encodeURIComponent(KEY)}`;
-        const res = await fetch(url, { cache: "no-store" });
-        const data = await res.json();
-        el.textContent = String(data.value ?? "—");
-      }catch(e){
-        el.textContent = "—";
-      }
-    }
+</div>
 
-    // Décompte vers 26/06/2026
-    const target = new Date(2026, 5, 26, 0, 0, 0);
-    const pad = (n)=> String(n).padStart(2,"0");
+<script>
+/* ===== COMPTEUR VISITEURS ===== */
+const NAMESPACE="vagabond-v9g9bond";
+const KEY="home";
 
-    function tickCountdown(){
-      const now = new Date();
-      const ms = target - now;
-      if(ms <= 0){
-        document.getElementById("countdown").textContent = "maintenant";
-        return;
-      }
-      const sec = Math.floor(ms/1000);
-      const d = Math.floor(sec/86400);
-      const h = Math.floor((sec%86400)/3600);
-      const m = Math.floor((sec%3600)/60);
-      const s = sec%60;
-      document.getElementById("countdown").textContent = `${d}j ${pad(h)}h ${pad(m)}m ${pad(s)}s`;
-    }
+fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${KEY}`)
+.then(res=>res.json())
+.then(data=>{
+  document.getElementById("visits").textContent=data.value;
+})
+.catch(()=>{});
 
-    // Formspree AJAX
-    const form = document.getElementById("signupForm");
-    const statusEl = document.getElementById("status");
+/* ===== COUNTDOWN ===== */
+const target=new Date(2026,5,26);
+function updateCountdown(){
+  const now=new Date();
+  const diff=target-now;
+  if(diff<=0){
+    document.getElementById("countdown").textContent="maintenant";
+    return;
+  }
+  const d=Math.floor(diff/1000/60/60/24);
+  const h=Math.floor(diff/1000/60/60)%24;
+  const m=Math.floor(diff/1000/60)%60;
+  const s=Math.floor(diff/1000)%60;
+  document.getElementById("countdown").textContent=
+    `${d}j ${h}h ${m}m ${s}s`;
+}
+setInterval(updateCountdown,1000);
+updateCountdown();
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      statusEl.textContent = "…";
-      try{
-        const formData = new FormData(form);
-        const res = await fetch(form.action, {
-          method: "POST",
-          body: formData,
-          headers: { "Accept": "application/json" }
-        });
-        if(res.ok){
-          statusEl.textContent = "inscription reçue ✶";
-          form.reset();
-        }else{
-          statusEl.textContent = "erreur — réessaie";
-        }
-      }catch(err){
-        statusEl.textContent = "erreur réseau — réessaie";
-      }
+/* ===== FORMSPREE AJAX ===== */
+const form=document.getElementById("signupForm");
+const statusEl=document.getElementById("status");
+
+form.addEventListener("submit",async(e)=>{
+  e.preventDefault();
+  statusEl.textContent="…";
+  try{
+    const res=await fetch(form.action,{
+      method:"POST",
+      body:new FormData(form),
+      headers:{Accept:"application/json"}
     });
+    if(res.ok){
+      statusEl.textContent="inscription reçue ✶";
+      form.reset();
+    }else{
+      statusEl.textContent="erreur — réessaie";
+    }
+  }catch{
+    statusEl.textContent="erreur réseau";
+  }
+});
+</script>
 
-    updateVisits();
-    tickCountdown();
-    setInterval(tickCountdown, 1000);
-  </script>
 </body>
 </html>
