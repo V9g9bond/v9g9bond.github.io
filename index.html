@@ -9,13 +9,13 @@
   <style>
     *{ box-sizing:border-box; }
     html, body{
-      height:100%;
-      margin:0;
-      background:#ffffff !important; /* force blanc */
-      color:#000000 !important;      /* force noir */
-      overflow:hidden;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-    }
+  height:100%;
+  margin:0;
+  background:#000000 !important;  /* fond noir */
+  color:#ffffff !important;       /* texte blanc */
+  overflow:hidden;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+}
 
     .stage{
       position:relative;
@@ -28,16 +28,18 @@
 
     /* Logo centré + mouvement doux */
     .logo{
-      width:min(86vw, 1100px);
-      height:auto;
-      user-select:none;
-      pointer-events:none;
-      animation: drift 9s ease-in-out infinite;
-      will-change: transform;
-      /* glow discret sur fond blanc = ombre noire douce */
-      filter: drop-shadow(0 0 18px rgba(0,0,0,0.14))
-              drop-shadow(0 0 60px rgba(0,0,0,0.06));
-    }
+  width:min(86vw, 1100px);
+  height:auto;
+  user-select:none;
+  pointer-events:none;
+  animation: drift 9s ease-in-out infinite;
+  will-change: transform;
+
+  /* inversion + glow blanc */
+  filter: invert(1) brightness(1.3)
+          drop-shadow(0 0 30px rgba(255,255,255,0.18))
+          drop-shadow(0 0 80px rgba(255,255,255,0.08));
+}
 
     @keyframes drift{
       0%   { transform: translate3d(-16px,  6px, 0); }
@@ -71,8 +73,8 @@
     input[type="email"]{
       width:min(360px, 52vw);
       background:transparent;
-      border:1px solid rgba(0,0,0,.18);
-      color:#000;
+      border:1px solid rgba(255,255,255,.25);
+      color:#fff;
       padding:10px 12px;
       border-radius:14px;
       outline:none;
@@ -82,8 +84,8 @@
 
     button{
       background:transparent;
-      border:1px solid rgba(0,0,0,.18);
-      color:#000;
+      border:1px solid rgba(255,255,255,.25);
+      color:#fff;
       padding:10px 14px;
       border-radius:14px;
       cursor:pointer;
