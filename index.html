@@ -4,22 +4,15 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>vagabond</title>
-  <meta name="theme-color" content="#000000" />
+  <meta name="theme-color" content="#ffffff" />
 
   <style>
-    :root{
-  --bg:#fff;
-  --fg:#000;
-  --muted: rgba(0,0,0,.75);
-  --muted2: rgba(0,0,0,.5);
-  --line: rgba(0,0,0,.16);
-}
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
+    *{ box-sizing:border-box; }
+    html, body{
+      height:100%;
       margin:0;
-      background:var(--bg);
-      color:var(--fg);
+      background:#ffffff !important; /* force blanc */
+      color:#000000 !important;      /* force noir */
       overflow:hidden;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
@@ -30,21 +23,22 @@
       height:100%;
       display:grid;
       place-items:center;
+      background:#ffffff !important; /* force blanc */
     }
 
-    /* Logo centré + mouvement doux perpétuel */
-  .logo{
-  width:min(86vw, 1100px);
-  height:auto;
-  user-select:none;
-  pointer-events:none;
-  animation: drift 9s ease-in-out infinite;
-  will-change: transform;
+    /* Logo centré + mouvement doux */
+    .logo{
+      width:min(86vw, 1100px);
+      height:auto;
+      user-select:none;
+      pointer-events:none;
+      animation: drift 9s ease-in-out infinite;
+      will-change: transform;
+      /* glow discret sur fond blanc = ombre noire douce */
+      filter: drop-shadow(0 0 18px rgba(0,0,0,0.14))
+              drop-shadow(0 0 60px rgba(0,0,0,0.06));
+    }
 
-  /* 🔥 Inversion + glow */
- filter: drop-shadow(0 0 18px rgba(0,0,0,0.12))
-        drop-shadow(0 0 60px rgba(0,0,0,0.06));
-}
     @keyframes drift{
       0%   { transform: translate3d(-16px,  6px, 0); }
       25%  { transform: translate3d( 18px, -6px, 0); }
@@ -64,9 +58,8 @@
       padding:0 18px;
     }
 
-    .signup{ max-width:min(560px, 66vw); }
     .cta{
-      color:var(--muted);
+      color: rgba(0,0,0,.78);
       font-size:13px;
       letter-spacing:.04em;
       margin-bottom:10px;
@@ -74,48 +67,52 @@
     }
 
     form{ display:flex; gap:10px; align-items:center; }
+
     input[type="email"]{
       width:min(360px, 52vw);
       background:transparent;
-      border:1px solid var(--line);
-      color:var(--fg);
+      border:1px solid rgba(0,0,0,.18);
+      color:#000;
       padding:10px 12px;
       border-radius:14px;
       outline:none;
       font-size:14px;
     }
-    input[type="email"]::placeholder{ color:var(--muted2); }
+    input[type="email"]::placeholder{ color: rgba(0,0,0,.45); }
 
     button{
       background:transparent;
-      border:1px solid var(--line);
-      color:var(--fg);
+      border:1px solid rgba(0,0,0,.18);
+      color:#000;
       padding:10px 14px;
       border-radius:14px;
       cursor:pointer;
       font-size:14px;
       transition: transform .15s ease, border-color .15s ease;
     }
-    button:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.28); }
+    button:hover{
+      transform: translateY(-1px);
+      border-color: rgba(0,0,0,.28);
+    }
 
     .status{
       margin-top:8px;
       min-height:16px;
       font-size:12px;
-      color:var(--muted2);
+      color: rgba(0,0,0,.5);
       user-select:none;
     }
 
     .info{
       text-align:right;
-      color:var(--muted);
+      color: rgba(0,0,0,.78);
       font-size:12px;
       letter-spacing:.03em;
       user-select:none;
       white-space:nowrap;
     }
-    .info b{ color:var(--fg); font-weight:600; }
-    .countdown{ margin-top:6px; color:var(--muted2); }
+    .info b{ color:#000; font-weight:700; }
+    .countdown{ margin-top:6px; color: rgba(0,0,0,.5); }
 
     @media (max-width:520px){
       form{ flex-direction:column; align-items:stretch; }
@@ -128,7 +125,7 @@
 
 <body>
   <div class="stage">
-    <!-- Mets ton image à la racine du repo et nomme-la EXACTEMENT logo.png -->
+    <!-- IMPORTANT: ton fichier doit s'appeler EXACTEMENT logo.png et être à la racine -->
     <img class="logo" src="logo.png" alt="vagabond" />
 
     <div class="bottom">
@@ -151,7 +148,7 @@
   </div>
 
   <script>
-    // Compteur visiteurs (CountAPI) — unique à ton site
+    // Compteur visiteurs (CountAPI)
     const NAMESPACE = "vagabond-v9g9bond";
     const KEY = "home";
 
@@ -160,7 +157,6 @@
       try{
         const url = `https://api.countapi.xyz/hit/${encodeURIComponent(NAMESPACE)}/${encodeURIComponent(KEY)}`;
         const res = await fetch(url, { cache: "no-store" });
-        if(!res.ok) throw new Error("CountAPI error");
         const data = await res.json();
         el.textContent = String(data.value ?? "—");
       }catch(e){
@@ -168,7 +164,7 @@
       }
     }
 
-    // Décompte vers 26/06/2026 (heure locale du visiteur)
+    // Décompte vers 26/06/2026
     const target = new Date(2026, 5, 26, 0, 0, 0);
     const pad = (n)=> String(n).padStart(2,"0");
 
@@ -187,7 +183,7 @@
       document.getElementById("countdown").textContent = `${d}j ${pad(h)}h ${pad(m)}m ${pad(s)}s`;
     }
 
-    // Formspree en AJAX
+    // Formspree AJAX
     const form = document.getElementById("signupForm");
     const statusEl = document.getElementById("status");
 
